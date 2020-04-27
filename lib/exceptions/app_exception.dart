@@ -54,6 +54,7 @@ class UnauthorisedException extends AppException {
   UnauthorisedException(this.message, this.code)
       : super(message, "Unauthorised: ") {
     String scode = code != null ? code.toString() : '';
+    navigator.pushNamed('/login');
 
     AlertBox.show(
         callback: () {

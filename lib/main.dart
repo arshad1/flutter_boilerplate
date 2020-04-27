@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutterappredux/middleware/route_middleware.dart';
 import 'package:flutterappredux/repository/auth_repository.dart';
 import 'package:flutterappredux/routes/app_routes.dart';
 //import 'package:flutterappredux/services/navigation_service.dart';
@@ -25,6 +26,9 @@ class MyApp extends StatelessWidget {
       ),
       home: SwitcherPage(),
       onGenerateRoute: Router.generateRoute,
+      navigatorObservers: [
+        GetObserver(RouteMiddleWare.observer), // HERE !!!
+      ],
     );
   }
 }
