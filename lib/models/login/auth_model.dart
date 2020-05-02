@@ -10,7 +10,8 @@ class AuthModel {
     this.success = json['success'];
     this.status = json['status'];
     this.data = json['data'] != null ? DataBean.fromJson(json['data']) : null;
-    this.error = json['error'] != null ? ErrorBean.fromJson(json['error']) : null;
+    this.error =
+        json['error'] != null ? ErrorBean.fromJson(json['error']) : null;
   }
 
   Map<String, dynamic> toJson() {
@@ -25,7 +26,6 @@ class AuthModel {
     }
     return data;
   }
-
 }
 
 class DataBean {
@@ -54,42 +54,62 @@ class DataBean {
 
 class ErrorBean {
   String message;
-  var code;
-  ErrorDetailsBean errorDetails;
+  String code;
+  List<ErrorDetailsListBean> errorDetails;
 
   ErrorBean({this.message, this.code, this.errorDetails});
 
+  //  this.errorDetails = (json['error_details'] != null && json['error_details'].length != 0 ) ? ErrorDetailsBean.fromJson(json['error_details']) : null;
+
   ErrorBean.fromJson(Map<String, dynamic> json) {
-     this.message = json['message'];
-     this.code = json['code'];
-     this.errorDetails = (json['error_details'] != null && json['error_details'].length != 0 ) ? ErrorDetailsBean.fromJson(json['error_details']) : null;
+    this.message = json['message'];
+    this.code = json['code'];
+    this.errorDetails =
+        (json['error_details'] != null && json['error_details'].length != 0)
+            ? (json['error_details'] as List)
+                .map((i) => ErrorDetailsListBean.fromJson(i))
+                .toList()
+            : null;
   }
 
   Map<String, dynamic> toJson() {
     final Map<String, dynamic> data = new Map<String, dynamic>();
     data['message'] = this.message;
     data['code'] = this.code;
-    if (this.errorDetails != null) {
-      data['error_details'] = this.errorDetails.toJson();
-    }
+    data['error_details'] =
+        (this.errorDetails != null && this.errorDetails.length != 0)
+            ? this.errorDetails.map((i) => i.toJson()).toList()
+            : null;
     return data;
   }
 }
 
-class ErrorDetailsBean {
+class ErrorDetailsListBean {
+  List<String> email;
   List<String> password;
 
-  ErrorDetailsBean({this.password});
+  ErrorDetailsListBean({this.email, this.password});
 
-  ErrorDetailsBean.fromJson(Map<String, dynamic> json) {
+  ErrorDetailsListBean.fromJson(Map<dynamic, dynamic> json) {
+    List<dynamic> emailList = json['email'] != null ? json['email'] : null;
+    this.email = new List();
+    if (emailList != null)
+      this.email.addAll(emailList.map((o) => o.toString()));
+    else
+      this.email.addAll([]);
 
-    List<dynamic> passwordList = json['password'];
+    List<dynamic> passwordList =
+        json['password'] != null ? json['password'] : null;
     this.password = new List();
-    this.password.addAll(passwordList.map((o) => o.toString()));
+    if (passwordList != null)
+      this.password.addAll(passwordList.map((o) => o.toString()));
+    else
+      this.password.addAll([]);
   }
 
   Map<String, dynamic> toJson() {
     final Map<String, dynamic> data = new Map<String, dynamic>();
+    data['email'] = this.email;
     data['password'] = this.password;
     return data;
   }
@@ -107,7 +127,17 @@ class UserBean {
   int status;
   GroupBean group;
 
-  UserBean({this.email, this.firstName, this.lastName, this.name, this.gender, this.dateOfBirth, this.phone, this.id, this.status, this.group});
+  UserBean(
+      {this.email,
+      this.firstName,
+      this.lastName,
+      this.name,
+      this.gender,
+      this.dateOfBirth,
+      this.phone,
+      this.id,
+      this.status,
+      this.group});
 
   UserBean.fromJson(Map<String, dynamic> json) {
     this.email = json['email'];
@@ -119,7 +149,8 @@ class UserBean {
     this.phone = json['phone'];
     this.id = json['id'];
     this.status = json['status'];
-    this.group = json['group'] != null ? GroupBean.fromJson(json['group']) : null;
+    this.group =
+        json['group'] != null ? GroupBean.fromJson(json['group']) : null;
   }
 
   Map<String, dynamic> toJson() {

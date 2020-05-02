@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'dart:math';
 
 import 'package:flutterappredux/models/login/auth_model.dart';
 import 'package:flutterappredux/repository/contract/auth_contract.dart';
@@ -87,15 +88,33 @@ class FakeAuthRepository extends AuthContract {
         }
       };
     } else {
-      response = {
-        "status": 401,
-        "success": false,
-        "error": {
-          "code": "error_401",
-          "message": "Email/Password combination not found",
-          "error_details": []
+      var responseList = [
+        {
+          "status": 401,
+          "success": false,
+          "error": {
+            "code": "auth_error",
+            "message": "Invalid Email or Password",
+            "error_details": []
+          }
+        },
+        {
+          "status": 422,
+          "success": false,
+          "error": {
+            "code": "error_422",
+            "message": "Validation error",
+            "error_details": [
+              {
+                "email": ["Email is required!"],
+                "password": ["Password is required!"]
+              }
+            ]
+          }
         }
-      };
+      ];
+      final _random = new Random();
+      response = responseList[_random.nextInt(responseList.length)];
     }
     AuthModel _authData = AuthModel.fromJson(response);
     return _authData;
