@@ -1,4 +1,5 @@
 import 'package:flutter/cupertino.dart';
+import 'package:flutter/material.dart';
 import 'package:flutterappredux/views/components/alert_dialog.dart';
 import 'package:get/get.dart';
 
@@ -35,7 +36,7 @@ class BadRequestException extends AppException {
 
   BadRequestException(this.message, this.code)
       : super(message, "Invalid Request: ") {
-    navigator.pushNamed('/'+code.toString());
+    navigator.pushNamed('/' + code.toString());
     String scode = code != null ? code.toString() : '';
 
     AlertBox.show(
@@ -56,12 +57,13 @@ class UnauthorisedException extends AppException {
     String scode = code != null ? code.toString() : '';
     navigator.pushNamed('/login');
 
-    AlertBox.show(
+     Get.snackbar('Error', message,backgroundColor:Colors.white );
+   /* AlertBox.show(
         callback: () {
           Get.back();
         },
         title: 'Error ' + scode,
-        message: Text(message));
+        message: Text(message));*/
   }
 }
 

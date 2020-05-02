@@ -60,11 +60,9 @@ class ErrorBean {
   ErrorBean({this.message, this.code, this.errorDetails});
 
   ErrorBean.fromJson(Map<String, dynamic> json) {
-   // print(json['error_details'] != null);
-    this.message = json['message'];
-    print(json['error_details'] != null && json['error_details'][0] != null && json['error_details'][0].length != 0);
-    this.code = json['code'];
-    this.errorDetails = (json['error_details'] != null && json['error_details'][0] != null && json['error_details'][0].length != 0) ? ErrorDetailsBean.fromJson(json['error_details']) : null;
+     this.message = json['message'];
+     this.code = json['code'];
+     this.errorDetails = (json['error_details'] != null && json['error_details'].length != 0 ) ? ErrorDetailsBean.fromJson(json['error_details']) : null;
   }
 
   Map<String, dynamic> toJson() {

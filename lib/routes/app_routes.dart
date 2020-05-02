@@ -1,9 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
+import 'package:flutterappredux/provider/AuthProvider.dart';
 import 'package:flutterappredux/views/errors/404_error.dart';
 import 'package:flutterappredux/views/home/index.dart';
 import 'package:flutterappredux/views/login/index.dart';
 import 'package:get/get.dart';
+import 'package:provider/provider.dart';
 
 class Router {
   static Route<dynamic> generateRoute(RouteSettings settings) {
@@ -19,7 +21,7 @@ class Router {
       case '/login':
         return GetRoute(
             settings: settings,
-            page: LoginPage(),
+            page: ChangeNotifierProvider(create: (BuildContext context) => AuthProvider(),child: LoginPage()),
             popGesture: true,
             transition: Transition.cupertino);
       case '/404':

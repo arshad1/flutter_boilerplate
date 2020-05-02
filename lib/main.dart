@@ -1,16 +1,18 @@
 import 'package:flutter/material.dart';
 import 'package:flutterappredux/middleware/route_middleware.dart';
-import 'package:flutterappredux/repository/auth_repository.dart';
+import 'package:flutterappredux/provider/AuthProvider.dart';
+import 'package:flutterappredux/repository/contract/auth_contract.dart';
 import 'package:flutterappredux/routes/app_routes.dart';
-//import 'package:flutterappredux/services/navigation_service.dart';
+import 'package:flutterappredux/services/locator_service.dart';
 import 'package:flutterappredux/views/home/index.dart';
 import 'package:flutterappredux/views/login/index.dart';
 import 'package:get/get.dart';
+import 'package:provider/provider.dart';
 
 import 'models/login/auth_model.dart';
 
 void main() {
-  //setupLocator();
+  setupLocator();
   runApp(MyApp());
 }
 
@@ -27,40 +29,41 @@ class MyApp extends StatelessWidget {
       home: SwitcherPage(),
       onGenerateRoute: Router.generateRoute,
       navigatorObservers: [
-        GetObserver(RouteMiddleWare.observer), // HERE !!!
+        GetObserver(RouteMiddleWare.observer),
       ],
     );
   }
 }
 
 class SwitcherPage extends StatelessWidget {
+  var _authRepository = locator<AuthContract>();
+
   @override
   Widget build(BuildContext context) {
     return FutureBuilder<AuthModel>(
-      future: AuthRepository.checkAuth(),
-      builder: (BuildContext context, snapshot) {
-        switch (snapshot.connectionState) {
-          case ConnectionState.waiting:
-            return Center(
-              child: CircularProgressIndicator(),
-            );
-          default:
-            if (snapshot.hasData) {
-              print(snapshot.data);
-              if (snapshot.data.success) {
-                return HomePage();
-                //    locator<NavigationService>().navigateTo('home');
-              }
-              // else
-              // Navigator.of(context).pushNamed('login');
-
-              return LoginPage();
-            } else {
+        future: _authRepository.checkAuth(),
+        builder: (BuildContext context, snapshot) {
+          switch (snapshot.connectionState) {
+            case ConnectionState.waiting:
               return Center(
                 child: CircularProgressIndicator(),
               );
-            }
-        }
-      });
+            default:
+              if (snapshot.hasData) {
+                if (snapshot.data.success) {
+                  return HomePage();
+                  //    locator<NavigationService>().navigateTo('home');
+                }
+                // else
+                // Navigator.of(context).pushNamed('login');
+
+                return ChangeNotifierProvider(create: (BuildContext context) => AuthProvider(),child: LoginPage());
+              } else {
+                return Center(
+                  child: CircularProgressIndicator(),
+                );
+              }
+          }
+        });
   }
 }

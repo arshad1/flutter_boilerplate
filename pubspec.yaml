@@ -25,7 +25,10 @@ dependencies:
   shared_preferences: ^0.5.7
   http:
   provider:
+  flutter_screenutil: ^1.1.0
   get: ^1.17.3
+  get_it:
+  logger: ^0.9.1
 dev_dependencies:
   flutter_test:
     sdk: flutter

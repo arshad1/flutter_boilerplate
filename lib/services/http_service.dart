@@ -2,7 +2,8 @@ import 'dart:convert';
 import 'dart:io';
 import 'package:flutterappredux/config/app_config.dart';
 import 'package:flutterappredux/exceptions/app_exception.dart';
-import 'package:flutterappredux/repository/auth_repository.dart';
+import 'package:flutterappredux/repository/contract/auth_contract.dart';
+import 'package:flutterappredux/services/locator_service.dart';
 import 'package:http/http.dart' as http;
 import 'package:shared_preferences/shared_preferences.dart';
 import 'dart:async';
@@ -13,7 +14,6 @@ class HttpHelper {
   Future<SharedPreferences> _prefs = SharedPreferences.getInstance();
   SharedPreferences _sharedPreferences;
 
-
   Future<dynamic> get(String url, {bool auth = false}) async {
     print(url);
     Map<String, String> hd = await getHeaders(auth);
@@ -23,7 +23,7 @@ class HttpHelper {
       final response = await http.get(url, headers: hd);
       responseJson = _returnResponse(response);
     } on SocketException {
-      throw FetchDataException('No Internet connection',null);
+      throw FetchDataException('No Internet connection', null);
     }
     return responseJson;
   }
@@ -34,12 +34,12 @@ class HttpHelper {
     print('Api Post, url $url');
     var responseJson;
     try {
-      final response = await http.post( url, body: body, headers: hd);
+      final response = await http.post(url, body: body, headers: hd);
       responseJson = _returnResponse(response);
       print(responseJson);
     } on SocketException {
       print('No net');
-      throw FetchDataException('No Internet connection',null);
+      throw FetchDataException('No Internet connection', null);
     }
     print('api post.');
     return responseJson;
@@ -51,11 +51,11 @@ class HttpHelper {
     print('Api Put, url $url');
     var responseJson;
     try {
-      final response = await http.put( url, body: body, headers: hd);
+      final response = await http.put(url, body: body, headers: hd);
       responseJson = _returnResponse(response);
     } on SocketException {
       print('No net');
-      throw FetchDataException('No Internet connection',null);
+      throw FetchDataException('No Internet connection', null);
     }
     print('api put.');
     print(responseJson.toString());
@@ -66,10 +66,10 @@ class HttpHelper {
     Map<String, String> hd = await getHeaders(auth);
     var apiResponse;
     try {
-      final response = await http.delete( url, headers: hd);
+      final response = await http.delete(url, headers: hd);
       apiResponse = _returnResponse(response);
     } on SocketException {
-       throw FetchDataException('No Internet connection',null);
+      throw FetchDataException('No Internet connection', null);
     }
     return apiResponse;
   }
@@ -81,7 +81,7 @@ class HttpHelper {
 
     if (auth) {
       _sharedPreferences = await _prefs;
-      String authToken = AuthRepository.getToken(_sharedPreferences);
+      String authToken = locator<AuthContract>().getToken(_sharedPreferences);
       if (authToken != null || authToken == '') {
         headers
             .addAll({HttpHeaders.authorizationHeader: "Bearer " + authToken});
